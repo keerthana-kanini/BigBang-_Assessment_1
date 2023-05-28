@@ -102,7 +102,28 @@ namespace Big_Bang__Assessment_1.Repository
                 throw new Exception("Error occurred while deleting room.", ex);
             }
         }
+        public int GetRoomCountByAvailabilityAndHotelId(int hotelId, string availability)
+        {
+            var query = hrContext.Rooms
+                .Where(room => room.Hotels != null && room.Hotels.Hotel_Id == hotelId);
 
+            if (availability == "yes")
+            {
+                query = query.Where(room => room.Room_Availability == "yes");
+            }
+            else if (availability == "no")
+            {
+                query = query.Where(room => room.Room_Availability == "no");
+            }
+
+            int count = query.Count();
+
+            return count;
+        }
 
     }
+
+
+
+
 }

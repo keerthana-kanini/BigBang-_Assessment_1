@@ -24,6 +24,8 @@ builder.Services.AddScoped<IHotelRepository, HotelRepository>();
 
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
+builder.Services.AddScoped<IStaffRepository, StaffRepository>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 
 // Adding Authentication
 builder.Services.AddAuthentication(options =>

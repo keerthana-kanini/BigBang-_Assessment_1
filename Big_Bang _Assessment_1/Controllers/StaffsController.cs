@@ -7,118 +7,74 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Big_Bang__Assessment_1.DB;
 using ClassLibrary.Models;
+using Big_Bang__Assessment_1.Repository;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Big_Bang__Assessment_1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class StaffsController : ControllerBase
     {
-        private readonly HotelContext _context;
+        private readonly IStaffRepository _staffRepository;
 
-        public StaffsController(HotelContext context)
+        public StaffsController(IStaffRepository staffRepository)
         {
-            _context = context;
+            _staffRepository = staffRepository;
         }
 
         // GET: api/Staffs
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Staff>>> GetStaffs()
         {
-          if (_context.Staffs == null)
-          {
-              return NotFound();
-          }
-            return await _context.Staffs.ToListAsync();
+            var staffs = await _staffRepository.GetStaffs();
+            return Ok(staffs);
         }
 
         // GET: api/Staffs/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Staff>> GetStaff(int id)
         {
-          if (_context.Staffs == null)
-          {
-              return NotFound();
-          }
-            var staff = await _context.Staffs.FindAsync(id);
-
+            var staff = await _staffRepository.GetStaff(id);
             if (staff == null)
-            {
                 return NotFound();
-            }
 
-            return staff;
+            return Ok(staff);
         }
 
         // PUT: api/Staffs/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutStaff(int id, Staff staff)
         {
-            if (id != staff.StaffId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(staff).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!StaffExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            var success = await _staffRepository.UpdateStaff(id, staff);
+            if (!success)
+                return NotFound();
 
             return NoContent();
         }
 
         // POST: api/Staffs
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Staff>> PostStaff(Staff staff)
         {
-          if (_context.Staffs == null)
-          {
-              return Problem("Entity set 'HotelContext.Staffs'  is null.");
-          }
-            _context.Staffs.Add(staff);
-            await _context.SaveChangesAsync();
+            var createdStaff = await _staffRepository.CreateStaff(staff);
+            if (createdStaff == null)
+                return Problem("Failed to create staff.");
 
-            return CreatedAtAction("GetStaff", new { id = staff.StaffId }, staff);
+            return CreatedAtAction("GetStaff", new { id = createdStaff.StaffId }, createdStaff);
         }
 
         // DELETE: api/Staffs/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteStaff(int id)
         {
-            if (_context.Staffs == null)
-            {
+            var success = await _staffRepository.DeleteStaff(id);
+            if (!success)
                 return NotFound();
-            }
-            var staff = await _context.Staffs.FindAsync(id);
-            if (staff == null)
-            {
-                return NotFound();
-            }
-
-            _context.Staffs.Remove(staff);
-            await _context.SaveChangesAsync();
 
             return NoContent();
         }
-
-        private bool StaffExists(int id)
-        {
-            return (_context.Staffs?.Any(e => e.StaffId == id)).GetValueOrDefault();
-        }
     }
 }
+

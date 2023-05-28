@@ -1,5 +1,7 @@
 ﻿using Big_Bang__Assessment_1.DB;
+using Big_Bang__Assessment_1.Repository;
 using ClassLibrary.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,117 +10,108 @@ namespace Big_Bang__Assessment_1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+  
     public class CustomersController : ControllerBase
     {
-        private readonly HotelContext _context;
+        private readonly ICustomerRepository _customerRepository;
 
-        public CustomersController(HotelContext context)
+        public CustomersController(ICustomerRepository customerRepository)
         {
-            _context = context;
+            _customerRepository = customerRepository;
         }
 
-        // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Customer>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<Customer>>> Get()
         {
-            if (_context.Customers == null)
-            {
-                return NotFound();
-            }
-            return await _context.Customers.ToListAsync();
-        }
-
-        // GET: api/Users/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Customer>> GetUser(int id)
-        {
-            if (_context.Customers == null)
-            {
-                return NotFound();
-            }
-            var user = await _context.Customers.FindAsync(id);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return user;
-        }
-
-        // PUT: api/Users/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, Customer user)
-        {
-            if (id != user.Customer_Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(user).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                var customers = await _customerRepository.GetCustomers();
+                return Ok(customers);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!UserExists(id))
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error occurred while retrieving customers.");
+            }
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Customer>> Get(int id)
+        {
+            try
+            {
+                var customer = await _customerRepository.GetCustomerById(id);
+                if (customer == null)
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+                return customer;
             }
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error occurred while retrieving the customer.");
+            }
         }
 
-        // POST: api/Users
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Customer>> PostUser(Customer user)
+        public async Task<ActionResult<Customer>> Post([FromBody] Customer customer)
         {
-            if (_context.Customers == null)
+            try
             {
-                return Problem("Entity set 'ProCatContext.Users' is null.");
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest();
+                }
+
+                var createdCustomer = await _customerRepository.CreateCustomer(customer);
+                return CreatedAtAction(nameof(Get), new { id = createdCustomer.Customer_Id }, createdCustomer);
             }
-
-            // Remove the explicit assignment of Customer_Id
-            _context.Customers.Add(user);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetUser", new { id = user.Customer_Id }, user);
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error occurred while creating the customer.");
+            }
         }
 
-        // DELETE: api/Users/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id, [FromBody] Customer customer)
+        {
+            try
+            {
+                if (!ModelState.IsValid || id != customer.Customer_Id)
+                {
+                    return BadRequest();
+                }
+
+                var updatedCustomer = await _customerRepository.UpdateCustomer(id, customer);
+                if (updatedCustomer == null)
+                {
+                    return NotFound();
+                }
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error occurred while updating the customer.");
+            }
+        }
+
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (_context.Customers == null)
+            try
             {
-                return NotFound();
+                var isDeleted = await _customerRepository.DeleteCustomer(id);
+                if (!isDeleted)
+                {
+                    return NotFound();
+                }
+
+                return NoContent();
             }
-            var user = await _context.Customers.FindAsync(id);
-            if (user == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error occurred while deleting the customer.");
             }
-
-            _context.Customers.Remove(user);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool UserExists(int id)
-        {
-            return (_context.Customers?.Any(e => e.Customer_Id == id)).GetValueOrDefault();
         }
     }
-
-
 }

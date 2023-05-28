@@ -9,5 +9,7 @@ namespace Big_Bang__Assessment_1.Repository
         Task<Hotel> PostHotelsAsync(Hotel hotel);
         Task<Hotel> PutHotelAsync(int id, Hotel hotel);
         Task<Hotel> DelHotelsAsync(int id);
+        IEnumerable<Hotel> SearchHotels(string location, int? minPrice, int? maxPrice, string amenities);
+        int GetAvailableRoomCount(int hotelId);
     }
 }

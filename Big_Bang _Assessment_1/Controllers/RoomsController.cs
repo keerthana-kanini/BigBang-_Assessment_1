@@ -1,5 +1,6 @@
 ﻿using Big_Bang__Assessment_1.Repository;
 using ClassLibrary.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -9,6 +10,7 @@ namespace Big_Bang__Assessment_1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class RoomsController : ControllerBase
     {
         private readonly IRoomRepository roomRepository;
@@ -99,7 +101,19 @@ namespace Big_Bang__Assessment_1.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error occurred while deleting the room.");
             }
         }
-
+        [HttpGet("roomcount/{hotelId}/{availability}")]
+        public IActionResult GetRoomCountByAvailabilityAndHotelId(int hotelId, string availability)
+        {
+            try
+            {
+                int count = roomRepository.GetRoomCountByAvailabilityAndHotelId(hotelId, availability);
+                return Ok(count);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error occurred while retrieving the room count by availability and hotel ID.");
+            }
+        }
 
     }
 

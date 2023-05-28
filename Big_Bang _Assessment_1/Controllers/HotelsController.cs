@@ -1,5 +1,6 @@
 ﻿using Big_Bang__Assessment_1.Repository;
 using ClassLibrary.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +8,7 @@ namespace Big_Bang__Assessment_1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class HotelsController : ControllerBase
     {
         private readonly IHotelRepository _hotelRepo;
@@ -99,6 +101,34 @@ namespace Big_Bang__Assessment_1.Controllers
                     return NotFound();
                 }
                 return Ok(hotel);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet("search")]
+        public IActionResult SearchHotels(string location, int? minPrice, int? maxPrice, string amenities)
+        {
+            try
+            {
+                var hotels = _hotelRepo.SearchHotels(location, minPrice, maxPrice, amenities);
+                return Ok(hotels);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet("{id}/available-room-count")]
+        public IActionResult GetAvailableRoomCount(int id)
+        {
+            try
+            {
+                var count = _hotelRepo.GetAvailableRoomCount(id);
+                return Ok(count);
             }
             catch (Exception ex)
             {
