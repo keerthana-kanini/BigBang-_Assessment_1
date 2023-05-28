@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Big_Bang__Assessment_1.Migrations
 {
     [DbContext(typeof(HotelContext))]
-    [Migration("20230528052657_hr")]
+    [Migration("20230528055609_hr")]
     partial class hr
     {
         /// <inheritdoc />
@@ -127,7 +127,13 @@ namespace Big_Bang__Assessment_1.Migrations
                     b.Property<string>("Room_Availability")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Room_Name")
+                    b.Property<int?>("Room_Capacity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Room_Number")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Room_Type")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Room_Id");

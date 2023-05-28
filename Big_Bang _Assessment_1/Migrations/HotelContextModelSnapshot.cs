@@ -124,7 +124,13 @@ namespace Big_Bang__Assessment_1.Migrations
                     b.Property<string>("Room_Availability")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Room_Name")
+                    b.Property<int?>("Room_Capacity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Room_Number")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Room_Type")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Room_Id");

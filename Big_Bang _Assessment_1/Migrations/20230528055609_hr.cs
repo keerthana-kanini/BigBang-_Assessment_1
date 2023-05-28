@@ -79,7 +79,9 @@ namespace Big_Bang__Assessment_1.Migrations
                 {
                     Room_Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "300, 1"),
-                    Room_Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Room_Number = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Room_Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Room_Capacity = table.Column<int>(type: "int", nullable: true),
                     Room_Availability = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Hotel_Id = table.Column<int>(type: "int", nullable: false),
                     HotelsHotel_Id = table.Column<int>(type: "int", nullable: false)
