@@ -14,7 +14,6 @@ namespace ClassLibrary.Models
         public string? StaffName { get; set; }
 
         public bool Manage_Room_Availability { get; set; }
-        public int Hotel_Id { get; set; }
-        public Hotel Hotels { get; set; }
+        public Hotel? Hotels { get; set; }
     }
 }

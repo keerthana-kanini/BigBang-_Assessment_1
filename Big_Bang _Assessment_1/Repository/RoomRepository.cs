@@ -43,7 +43,7 @@ namespace Big_Bang__Assessment_1.Repository
         {
             try
             {
-                var existingHotel = hrContext.Hotels.Find(room.Hotels.Hotel_Id);
+                var existingHotel = hrContext.Hotels.Find(room.Hotel_Id);
                 if (existingHotel == null)
                 {
                     throw new Exception("Hotel not found.");
@@ -70,6 +70,7 @@ namespace Big_Bang__Assessment_1.Repository
                 if (existingRoom != null)
                 {
                     existingRoom.Room_Number = room.Room_Number;
+                    existingRoom.Room_Type = room.Room_Type;
                     existingRoom.Room_Capacity = room.Room_Capacity;
                     existingRoom.Room_Availability = room.Room_Availability;
 

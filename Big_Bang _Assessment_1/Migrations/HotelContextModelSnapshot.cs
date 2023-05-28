@@ -86,25 +86,22 @@ namespace Big_Bang__Assessment_1.Migrations
                     b.Property<DateTime>("Check_out_date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Customer_Id")
+                    b.Property<int?>("Customer_Id")
                         .HasColumnType("int");
 
-                    b.Property<int>("CustomersCustomer_Id")
+                    b.Property<int?>("CustomersCustomer_Id")
                         .HasColumnType("int");
 
-                    b.Property<int>("Hotel_Id")
-                        .HasColumnType("int");
-
-                    b.Property<int>("hotelsHotel_Id")
+                    b.Property<int?>("Hotel_Id")
                         .HasColumnType("int");
 
                     b.HasKey("Reservation_Id");
 
                     b.HasIndex("CustomersCustomer_Id");
 
-                    b.HasIndex("hotelsHotel_Id");
+                    b.HasIndex("Hotel_Id");
 
-                    b.ToTable("Reservation");
+                    b.ToTable("Reservations");
                 });
 
             modelBuilder.Entity("ClassLibrary.Models.Room", b =>
@@ -118,7 +115,7 @@ namespace Big_Bang__Assessment_1.Migrations
                     b.Property<int>("Hotel_Id")
                         .HasColumnType("int");
 
-                    b.Property<int>("HotelsHotel_Id")
+                    b.Property<int?>("HotelsHotel_Id")
                         .HasColumnType("int");
 
                     b.Property<string>("Room_Availability")
@@ -148,10 +145,7 @@ namespace Big_Bang__Assessment_1.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StaffId"));
 
-                    b.Property<int>("Hotel_Id")
-                        .HasColumnType("int");
-
-                    b.Property<int>("HotelsHotel_Id")
+                    b.Property<int?>("HotelsHotel_Id")
                         .HasColumnType("int");
 
                     b.Property<bool>("Manage_Room_Availability")
@@ -171,28 +165,20 @@ namespace Big_Bang__Assessment_1.Migrations
                 {
                     b.HasOne("ClassLibrary.Models.Customer", "Customers")
                         .WithMany("Reservations")
-                        .HasForeignKey("CustomersCustomer_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CustomersCustomer_Id");
 
-                    b.HasOne("ClassLibrary.Models.Hotel", "hotels")
+                    b.HasOne("ClassLibrary.Models.Hotel", null)
                         .WithMany("Reservations")
-                        .HasForeignKey("hotelsHotel_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("Hotel_Id");
 
                     b.Navigation("Customers");
-
-                    b.Navigation("hotels");
                 });
 
             modelBuilder.Entity("ClassLibrary.Models.Room", b =>
                 {
                     b.HasOne("ClassLibrary.Models.Hotel", "Hotels")
                         .WithMany("Rooms")
-                        .HasForeignKey("HotelsHotel_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("HotelsHotel_Id");
 
                     b.Navigation("Hotels");
                 });
@@ -201,9 +187,7 @@ namespace Big_Bang__Assessment_1.Migrations
                 {
                     b.HasOne("ClassLibrary.Models.Hotel", "Hotels")
                         .WithMany("Staff")
-                        .HasForeignKey("HotelsHotel_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("HotelsHotel_Id");
 
                     b.Navigation("Hotels");
                 });

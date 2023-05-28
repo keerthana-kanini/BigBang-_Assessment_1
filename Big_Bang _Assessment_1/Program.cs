@@ -23,7 +23,7 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 builder.Services.AddScoped<IHotelRepository, HotelRepository>();
 
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
-//builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
+builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 
 // Adding Authentication
 builder.Services.AddAuthentication(options =>

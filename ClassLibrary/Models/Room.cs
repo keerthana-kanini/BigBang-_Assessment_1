@@ -23,7 +23,7 @@ namespace ClassLibrary.Models
 
         public int Hotel_Id { get; set; }
 
-        public Hotel Hotels { get; set; }
+        public Hotel? Hotels { get; set; }
 
     }
 }

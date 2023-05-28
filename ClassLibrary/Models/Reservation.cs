@@ -14,12 +14,7 @@ namespace ClassLibrary.Models
         public DateTime Check_in_date { get; set; }
         public DateTime Check_out_date { get; set; }
 
-       
-
-        public int Customer_Id { get; set; }
-        public Customer Customers { get; set; }
-
-        public int Hotel_Id { get; set; }
-        public Hotel hotels { get; set; }
+        public int? Customer_Id { get; set; }
+        public Customer? Customers { get; set; }
     }
 }
