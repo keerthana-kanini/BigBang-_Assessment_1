@@ -9,7 +9,10 @@ namespace Big_Bang__Assessment_1.Repository
         Room CreateRoom(Room room);
         Room UpdateRoom(int id, Room room);
         void DeleteRoom(int id);
-        int GetRoomCountByAvailabilityAndHotelId(int hotelId, string availability);
+    
+
+        Task<int> GetAvailableRoomCountByHotel(int hotelId);
+        Task<IEnumerable<Room>> GetRoomsByHotelAndAvailability(int hotelId, string availability);
 
     }
 }

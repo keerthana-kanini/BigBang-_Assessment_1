@@ -102,24 +102,17 @@ namespace Big_Bang__Assessment_1.Repository
                 throw new Exception("Error occurred while deleting room.", ex);
             }
         }
-        public int GetRoomCountByAvailabilityAndHotelId(int hotelId, string availability)
+        public async Task<int> GetAvailableRoomCountByHotel(int hotelId)
         {
-            var query = hrContext.Rooms
-                .Where(room => room.Hotels != null && room.Hotels.Hotel_Id == hotelId);
-
-            if (availability == "yes")
-            {
-                query = query.Where(room => room.Room_Availability == "yes");
-            }
-            else if (availability == "no")
-            {
-                query = query.Where(room => room.Room_Availability == "no");
-            }
-
-            int count = query.Count();
-
-            return count;
+            return await hrContext.Rooms.CountAsync(r => r.Hotel_Id == hotelId && r.Room_Availability == "yes");
         }
+
+        public async Task<IEnumerable<Room>> GetRoomsByHotelAndAvailability(int hotelId, string availability)
+        {
+            return await hrContext.Rooms.Where(r => r.Hotel_Id == hotelId && r.Room_Availability == availability).ToListAsync();
+        }
+       
+
 
     }
 

@@ -98,60 +98,37 @@ namespace Big_Bang__Assessment_1.Repository
                 throw new Exception("An error occurred while searching hotels.", ex);
             }
         }
-        public IEnumerable<Hotel> SearchHotels(string location, int? minPrice, int? maxPrice, string amenities)
+
+        public IEnumerable<Hotel> SearchHotelsbylocation(string location)
+        {
+            IQueryable<Hotel> query = _projectcontext.Hotels.Include(x => x.Rooms);
+
+            // Apply filter based on location
+            if (!string.IsNullOrEmpty(location))
+            {
+                query = query.Where(x => x.Hotel_Location.Contains(location));
+            }
+
+            return query.ToList();
+        }
+
+        public IEnumerable<Hotel> SearchHotelsByPriceRange(int minPrice, int maxPrice)
         {
             try
             {
-                IQueryable<Hotel> query = _projectcontext.Hotels.Include(x => x.Rooms);
-
-                // Apply filters
-                if (!string.IsNullOrEmpty(location))
-                {
-                    query = query.Where(x => x.Hotel_Location.Contains(location));
-                }
-
-                if (minPrice.HasValue)
-                {
-                    query = query.Where(x => x.Hotel_Price >= minPrice.Value);
-                }
-
-                if (maxPrice.HasValue)
-                {
-                    query = query.Where(x => x.Hotel_Price <= maxPrice.Value);
-                }
-
-                if (!string.IsNullOrEmpty(amenities))
-                {
-                    query = query.Where(x => x.Hotel_Amenities.Contains(amenities));
-                }
-
-                return query.ToList();
+                return _projectcontext.Hotels
+                    .Where(x => x.Hotel_Price >= minPrice && x.Hotel_Price <= maxPrice)
+                    .ToList();
             }
             catch (Exception ex)
             {
-                throw new Exception("An error occurred while searching hotels.", ex);
+                // Handle the exception appropriately
+                throw new Exception("An error occurred while searching rooms by price range.", ex);
             }
         }
 
-        public int GetAvailableRoomCount(int hotelId)
-        {
-            try
-            {
-                var hotel = _projectcontext.Hotels.Include(x => x.Rooms).FirstOrDefault(x => x.Hotel_Id == hotelId);
-                if (hotel == null)
-                {
-                    throw new ArgumentException("Invalid hotel ID.");
-                }
 
-                return hotel.Rooms.Count(r => int.Parse(r.Room_Availability) > 0);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error occurred while retrieving available room count.", ex);
-            }
-        }
-
-        // Existing methods...
+        
     }
 
 

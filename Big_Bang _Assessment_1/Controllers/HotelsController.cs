@@ -8,7 +8,7 @@ namespace Big_Bang__Assessment_1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class HotelsController : ControllerBase
     {
         private readonly IHotelRepository _hotelRepo;
@@ -107,33 +107,34 @@ namespace Big_Bang__Assessment_1.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-
-        [HttpGet("search")]
-        public IActionResult SearchHotels(string location, int? minPrice, int? maxPrice, string amenities)
+        [HttpGet("search/location")]
+        public IActionResult SearchHotels(string location)
         {
             try
             {
-                var hotels = _hotelRepo.SearchHotels(location, minPrice, maxPrice, amenities);
+                var hotels = _hotelRepo.SearchHotelsbylocation(location);
                 return Ok(hotels);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while searching hotels.");
             }
         }
 
-        [HttpGet("{id}/available-room-count")]
-        public IActionResult GetAvailableRoomCount(int id)
+        [HttpGet("search/Pricerange")]
+        public IEnumerable<Hotel> SearchHotelsByPriceRange(int minPrice, int maxPrice)
         {
             try
             {
-                var count = _hotelRepo.GetAvailableRoomCount(id);
-                return Ok(count);
+                return _hotelRepo.SearchHotelsByPriceRange(minPrice, maxPrice);
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                // Handle the exception appropriately
+                throw new Exception("An error occurred while searching hotels by price range.", ex);
             }
         }
+
+
     }
 }

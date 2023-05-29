@@ -10,7 +10,7 @@ namespace Big_Bang__Assessment_1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //  [Authorize]
     public class RoomsController : ControllerBase
     {
         private readonly IRoomRepository roomRepository;
@@ -101,20 +101,34 @@ namespace Big_Bang__Assessment_1.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error occurred while deleting the room.");
             }
         }
-        [HttpGet("roomcount/{hotelId}/{availability}")]
-        public IActionResult GetRoomCountByAvailabilityAndHotelId(int hotelId, string availability)
+       
+        [HttpGet("Hotel/{hotelId}/AvailableCount")]
+        public async Task<ActionResult<int>> GetAvailableRoomCountByHotel(int hotelId)
         {
             try
             {
-                int count = roomRepository.GetRoomCountByAvailabilityAndHotelId(hotelId, availability);
+                var count = await roomRepository.GetAvailableRoomCountByHotel(hotelId);
                 return Ok(count);
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error occurred while retrieving the room count by availability and hotel ID.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while retrieving the available room count by hotel.");
+            }
+        }
+        [HttpGet("Hotel/{hotelId}/Availability/{availability}")]
+        public async Task<ActionResult<IEnumerable<Room>>> GetRoomsByHotelAndAvailability(int hotelId, string availability)
+        {
+            try
+            {
+                var rooms = await roomRepository.GetRoomsByHotelAndAvailability(hotelId, availability);
+                return Ok(rooms);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while retrieving rooms by hotel and availability.");
             }
         }
 
-    }
 
+    }
 }
