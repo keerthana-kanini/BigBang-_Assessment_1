@@ -12,7 +12,7 @@ namespace Big_Bang__Assessment_1.DB
         public DbSet<Room> Rooms { get; set; }
 
         public DbSet<Staff> Staffs { get; set; }
-        public DbSet<Reservation>? Reservations { get; set; }
+        public DbSet<Reservation> Reservations { get; set; }
 
 
 

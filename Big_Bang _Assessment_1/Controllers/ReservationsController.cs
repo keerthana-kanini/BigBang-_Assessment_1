@@ -25,57 +25,96 @@ namespace Big_Bang__Assessment_1.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Reservation>>> GetReservations()
         {
-            var reservations = await _repository.GetReservations();
-            return Ok(reservations);
+            try
+            {
+                var reservations = await _repository.GetReservations();
+                return Ok(reservations);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it appropriately
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while retrieving the reservations.");
+            }
         }
 
         // GET: api/Reservations/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Reservation>> GetReservation(int id)
         {
-            var reservation = await _repository.GetReservation(id);
-            if (reservation == null)
+            try
             {
-                return NotFound();
+                var reservation = await _repository.GetReservation(id);
+                if (reservation == null)
+                {
+                    return NotFound();
+                }
+                return reservation;
             }
-            return reservation;
+            catch (Exception ex)
+            {
+                // Log the exception or handle it appropriately
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while retrieving the reservation.");
+            }
         }
 
         // PUT: api/Reservations/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutReservation(int id, Reservation reservation)
         {
-            if (id != reservation.Reservation_Id)
+            try
             {
-                return BadRequest();
+                if (id != reservation.Reservation_Id)
+                {
+                    return BadRequest();
+                }
+                var result = await _repository.UpdateReservation(id, reservation);
+                if (result == 0)
+                {
+                    return NotFound();
+                }
+                return NoContent();
             }
-            var result = await _repository.UpdateReservation(id, reservation);
-            if (result == 0)
+            catch (Exception ex)
             {
-                return NotFound();
+                // Log the exception or handle it appropriately
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while updating the reservation.");
             }
-            return NoContent();
         }
 
         // POST: api/Reservations
         [HttpPost]
         public async Task<ActionResult<Reservation>> PostReservation(Reservation reservation)
         {
-            var id = await _repository.CreateReservation(reservation);
-            return CreatedAtAction("GetReservation", new { id }, reservation);
+            try
+            {
+                var id = await _repository.CreateReservation(reservation);
+                return CreatedAtAction("GetReservation", new { id }, reservation);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it appropriately
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while creating the reservation.");
+            }
         }
 
         // DELETE: api/Reservations/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteReservation(int id)
         {
-            var result = await _repository.DeleteReservation(id);
-            if (result == 0)
+            try
             {
-                return NotFound();
+                var result = await _repository.DeleteReservation(id);
+                if (result == 0)
+                {
+                    return NotFound();
+                }
+                return NoContent();
             }
-            return NoContent();
+            catch (Exception ex)
+            {
+                // Log the exception or handle it appropriately
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while deleting the reservation.");
+            }
         }
     }
 }
-

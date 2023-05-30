@@ -4,6 +4,7 @@ using ClassLibrary.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,6 +51,14 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Host.UseSerilog((context, config) =>
+{
+    config.WriteTo.File("Log/log.txt", rollingInterval: RollingInterval.Day);
+    if (context.HostingEnvironment.IsProduction() == false)
+    {
+        config.WriteTo.Console();
+    }
+});
 
 var app = builder.Build();
 

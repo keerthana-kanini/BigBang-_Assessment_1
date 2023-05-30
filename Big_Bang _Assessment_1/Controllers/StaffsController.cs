@@ -14,7 +14,7 @@ namespace Big_Bang__Assessment_1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-   [Authorize]
+    [Authorize]
     public class StaffsController : ControllerBase
     {
         private readonly IStaffRepository _staffRepository;
@@ -28,53 +28,92 @@ namespace Big_Bang__Assessment_1.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Staff>>> GetStaffs()
         {
-            var staffs = await _staffRepository.GetStaffs();
-            return Ok(staffs);
+            try
+            {
+                var staffs = await _staffRepository.GetStaffs();
+                return Ok(staffs);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it appropriately
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while retrieving the staffs.");
+            }
         }
 
         // GET: api/Staffs/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Staff>> GetStaff(int id)
         {
-            var staff = await _staffRepository.GetStaff(id);
-            if (staff == null)
-                return NotFound();
+            try
+            {
+                var staff = await _staffRepository.GetStaff(id);
+                if (staff == null)
+                    return NotFound();
 
-            return Ok(staff);
+                return Ok(staff);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it appropriately
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while retrieving the staff.");
+            }
         }
 
         // PUT: api/Staffs/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutStaff(int id, Staff staff)
         {
-            var success = await _staffRepository.UpdateStaff(id, staff);
-            if (!success)
-                return NotFound();
+            try
+            {
+                var success = await _staffRepository.UpdateStaff(id, staff);
+                if (!success)
+                    return NotFound();
 
-            return NoContent();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it appropriately
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while updating the staff.");
+            }
         }
 
         // POST: api/Staffs
         [HttpPost]
         public async Task<ActionResult<Staff>> PostStaff(Staff staff)
         {
-            var createdStaff = await _staffRepository.CreateStaff(staff);
-            if (createdStaff == null)
-                return Problem("Failed to create staff.");
+            try
+            {
+                var createdStaff = await _staffRepository.CreateStaff(staff);
+                if (createdStaff == null)
+                    return Problem("Failed to create staff.");
 
-            return CreatedAtAction("GetStaff", new { id = createdStaff.StaffId }, createdStaff);
+                return CreatedAtAction("GetStaff", new { id = createdStaff.StaffId }, createdStaff);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it appropriately
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while creating the staff.");
+            }
         }
 
         // DELETE: api/Staffs/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteStaff(int id)
         {
-            var success = await _staffRepository.DeleteStaff(id);
-            if (!success)
-                return NotFound();
+            try
+            {
+                var success = await _staffRepository.DeleteStaff(id);
+                if (!success)
+                    return NotFound();
 
-            return NoContent();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it appropriately
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while deleting the staff.");
+            }
         }
     }
 }
-

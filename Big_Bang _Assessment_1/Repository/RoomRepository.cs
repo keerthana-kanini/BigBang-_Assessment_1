@@ -104,14 +104,28 @@ namespace Big_Bang__Assessment_1.Repository
         }
         public async Task<int> GetAvailableRoomCountByHotel(int hotelId)
         {
-            return await hrContext.Rooms.CountAsync(r => r.Hotel_Id == hotelId && r.Room_Availability == "yes");
+            try
+            {
+                return await hrContext.Rooms.CountAsync(r => r.Hotel_Id == hotelId && r.Room_Availability == "yes");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while getting the available room count.");
+            }
         }
 
         public async Task<IEnumerable<Room>> GetRoomsByHotelAndAvailability(int hotelId, string availability)
         {
-            return await hrContext.Rooms.Where(r => r.Hotel_Id == hotelId && r.Room_Availability == availability).ToListAsync();
+            try
+            {
+                return await hrContext.Rooms.Where(r => r.Hotel_Id == hotelId && r.Room_Availability == availability).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while getting the rooms by hotel and availability.");
+            }
         }
-       
+
 
 
     }
